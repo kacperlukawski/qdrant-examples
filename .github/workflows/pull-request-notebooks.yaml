@@ -36,10 +36,14 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'poetry'
-      - run: poetry install --with dev
+      - run: |
+          cd examples
+          poetry install --with dev
 
       - name: Convert notebooks
-        run: poetry run python examples/.scripts/convert-all-notebooks-to-hugo-markdown.py
+        run: |
+          cd examples
+          poetry run python .scripts/convert-all-notebooks-to-hugo-markdown.py
 
       - name: Copy converted notebooks to landing page
         run: cp -r examples/.dist/* landing-page/content/documentation/
