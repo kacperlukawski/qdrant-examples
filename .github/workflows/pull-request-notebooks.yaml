@@ -52,14 +52,14 @@ jobs:
 
       - name: Commit changes to a new branch
         env:
-          USER_NAME: '{{ github.actor }}'
-          USER_EMAIL: '{{ github.actor }}@users.noreply.github.com'
-          TARGET_BRANCH: examples/{{ github.event.pull_request.head.ref }}
+          USER_NAME: '${{ github.actor }}'
+          USER_EMAIL: '${{ github.actor }}@users.noreply.github.com'
+          TARGET_BRANCH: 'examples/${{ github.event.pull_request.head.ref }}'
         run: |
           cd landing_page
           git config user.name $USER_NAME
           git config user.email $USER_EMAIL
           git checkout -b $TARGET_BRANCH
           git add .
-          git commit -m "Add notebooks from PR #{{ github.event.pull_request.number }}"
+          git commit -m "Add notebooks from PR #${{ github.event.pull_request.number }}\n${{ github.event.pull_request.title }}"
           git push --set-upstream origin $TARGET_BRANCH
