@@ -45,16 +45,16 @@ jobs:
         run: cp -r examples/.dist/* landing-page/content/documentation/
 
       - name: Commit changes to a new branch
-        uses: actions/checkout@v4
         env:
           USER_NAME: '{{ github.actor }}'
           USER_EMAIL: '{{ github.actor }}@users.noreply.github.com'
+          TARGET_BRANCH: examples/{{ github.event.pull_request.head.ref }}
         run: |
           cp -r examples/.dist/* landing-page/content/documentation/
           cd landing-page
           git config user.name $USER_NAME
           git config user.email $USER_EMAIL
-          git checkout -b examples/{{ github.event.pull_request.head.ref }}
+          git checkout -b $TARGET_BRANCH
           git add .
           git commit -m "Add notebooks from PR #{{ github.event.pull_request.number }}"
-          git push --set-upstream origin examples/{{ github.event.pull_request.head.ref }}
+          git push --set-upstream origin $TARGET_BRANCH
