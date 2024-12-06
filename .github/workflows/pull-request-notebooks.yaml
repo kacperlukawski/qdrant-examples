@@ -33,15 +33,12 @@ jobs:
         run: poetry run python .scripts/convert-all-notebooks-to-hugo-markdown.py
 
       - name: Pull Request landing page repository
-        uses: car-on-sale/action-pull-request-another-repo@v1.3.1
+        uses: harrietrs/copy-to-pr@v1.0.0
         env:
-          API_TOKEN_GITHUB: ${{ env.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_folder: '.dist'
-          destination_repo: 'kacperlukawski/landing_page'
-          destination_folder: 'qdrant-landing/content/documentation'
+          destination_owner: 'kacperlukawski'
+          destination_repo: 'landing_page'
+          source_directory: '.dist'
+          destination_directory: 'qdrant-landing/content/documentation'
           destination_base_branch: 'master'
-          destination_head_branch: ${{ env.GITHUB_HEAD_REF }}
-          user_email: ${{ github.event.pull_request.user.email }}
-          user_name: ${{ github.event.pull_request.user.login }}
-          pr_title: ${{ github.event.pull_request.title }}
