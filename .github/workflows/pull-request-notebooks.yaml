@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kacperlukawski/landing_page
-          path: 'landing-page'
+          path: 'landing_page'
 
       - name: Install poetry
         run: pipx install poetry
@@ -46,7 +46,9 @@ jobs:
           poetry run python .scripts/convert-all-notebooks-to-hugo-markdown.py
 
       - name: Copy converted notebooks to landing page
-        run: cp -r examples/.dist/* landing-page/content/documentation/
+        run: |
+          mkdir -p landing_page/qdrant-landing/content/documentation/
+          cp -r examples/.dist/* landing_page/qdrant-landing/content/documentation/
 
       - name: Commit changes to a new branch
         env:
@@ -54,8 +56,7 @@ jobs:
           USER_EMAIL: '{{ github.actor }}@users.noreply.github.com'
           TARGET_BRANCH: examples/{{ github.event.pull_request.head.ref }}
         run: |
-          cp -r examples/.dist/* landing-page/content/documentation/
-          cd landing-page
+          cd landing_page
           git config user.name $USER_NAME
           git config user.email $USER_EMAIL
           git checkout -b $TARGET_BRANCH
