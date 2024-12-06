@@ -18,7 +18,16 @@ jobs:
     if: github.event.pull_request.merged == true
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        with:
+          path: 'current-repo'
+
+      - name: Checkout landing page repository
+        uses: actions/checkout@v4
+        with:
+          repository: kacperlukawski/landing_page
+          path: 'landing-page'
 
       - name: Install poetry
         run: pipx install poetry
@@ -31,14 +40,3 @@ jobs:
 
       - name: Convert notebooks
         run: poetry run python .scripts/convert-all-notebooks-to-hugo-markdown.py
-
-      - name: Pull Request landing page repository
-        uses: kacperlukawski/pull-request-another-repo@v1.0.0
-        env:
-          GH_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          destination_owner: 'kacperlukawski'
-          destination_repo: 'landing_page'
-          source_directory: '.dist'
-          destination_directory: 'qdrant-landing/content/documentation'
-          destination_base_branch: 'master'
