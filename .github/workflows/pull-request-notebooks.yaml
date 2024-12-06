@@ -33,7 +33,7 @@ jobs:
         run: poetry run python .scripts/convert-all-notebooks-to-hugo-markdown.py
 
       - name: Pull Request landing page repository
-        uses: harrietrs/copy-to-pr@v1.0.0
+        uses: kacperlukawski/pull-request-another-repo@v1.0.0
         env:
           GH_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
         with:
