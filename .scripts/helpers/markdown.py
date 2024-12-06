@@ -8,6 +8,7 @@ from loguru import logger
 from markdown_it import MarkdownIt
 from mdformat.renderer import MDRenderer
 from mdformat_frontmatter import plugin as mdformat_front_matter_plugin
+from mdformat_tables import plugin as tables_plugin
 from mdit_py_plugins.front_matter import front_matter_plugin
 from mdit_py_plugins.wordcount import wordcount_plugin
 from nbconvert import MarkdownExporter
@@ -38,12 +39,13 @@ class NotebookToHugoMarkdownConverter:
         self._md = (
             MarkdownIt(
                 "gfm-like",
-                {"parser_extension": [mdformat_front_matter_plugin]},
+                {"parser_extension": [mdformat_front_matter_plugin, tables_plugin]},
                 renderer_cls=MDRenderer,
             )
             .use(front_matter_plugin)
             .use(wordcount_plugin)
             .enable("front_matter")
+            .enable("table")
         )
         self._git_repository = GitHubRepository()
 

@@ -1265,6 +1265,24 @@ dev = ["flit (>=3.9)", "pre-commit", "python-semantic-release (>=8.3.0)"]
 test = ["coverage", "pytest (>=7.3)", "pytest-cov"]
 
 [[package]]
+name = "mdformat-tables"
+version = "1.0.0"
+description = "An mdformat plugin for rendering tables."
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "mdformat_tables-1.0.0-py3-none-any.whl", hash = "sha256:94cd86126141b2adc3b04c08d1441eb1272b36c39146bab078249a41c7240a9a"},
+    {file = "mdformat_tables-1.0.0.tar.gz", hash = "sha256:a57db1ac17c4a125da794ef45539904bb8a9592e80557d525e1f169c96daa2c8"},
+]
+
+[package.dependencies]
+mdformat = ">=0.7.5,<0.8.0"
+wcwidth = ">=0.2.13"
+
+[package.extras]
+test = ["coverage", "pytest (>=6.0,<7.0)", "pytest-cov"]
+
+[[package]]
 name = "mdit-py-plugins"
 version = "0.4.2"
 description = "Collection of plugins for markdown-it-py"
@@ -2577,4 +2595,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6ea7fa3744b8db98b6beb0e6c7fbcde177daec9d3c16f05bfaf25e81305f2a54"
+content-hash = "8af36e607be4ba047ce1c4a4068f73d79436538b49034c7c54398ffedeea5ad4"
