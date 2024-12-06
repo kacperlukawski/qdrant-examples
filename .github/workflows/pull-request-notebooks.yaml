@@ -28,6 +28,7 @@ jobs:
         with:
           repository: kacperlukawski/landing_page
           path: 'landing_page'
+          token: ${{ secrets.API_TOKEN_GITHUB }}
 
       - name: Install poetry
         run: pipx install poetry
