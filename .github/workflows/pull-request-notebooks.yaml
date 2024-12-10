@@ -49,7 +49,7 @@ jobs:
       - name: Copy converted notebooks to landing page
         run: |
           mkdir -p landing_page/qdrant-landing/content/documentation/
-          cp -r examples/.dist/* landing_page/qdrant-landing/content/documentation/
+          cp -n -r examples/.dist/* landing_page/qdrant-landing/content/documentation/
 
       - name: Commit changes to a new branch
         env:
