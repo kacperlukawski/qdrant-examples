@@ -68,5 +68,5 @@ jobs:
           gh pr create \
             --title "Add notebooks from PR #${{ github.event.pull_request.number }}" \
             --body "${{ github.event.pull_request.title }}" \
-            --base master
+            --base master \
             --head $TARGET_BRANCH
