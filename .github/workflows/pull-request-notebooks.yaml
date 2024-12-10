@@ -53,6 +53,7 @@ jobs:
 
       - name: Commit changes to a new branch
         env:
+          GH_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
           USER_NAME: '${{ github.actor }}'
           USER_EMAIL: '${{ github.actor }}@users.noreply.github.com'
           TARGET_BRANCH: 'examples/${{ github.event.pull_request.head.ref }}-pr-${{ github.event.pull_request.number }}'
