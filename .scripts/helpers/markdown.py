@@ -49,11 +49,14 @@ class NotebookToHugoMarkdownConverter:
         )
         self._git_repository = GitHubRepository()
 
-    def convert(self, notebook_path: Path, output_path: Path):
+    def convert(
+        self, notebook_path: Path, output_path: Path, assets_dir: Path | None = None
+    ):
         """
         Run the conversion process for a selected Jupyter notebook and save the output to a markdown file.
         :param notebook_path: The path to the Jupyter notebook to convert.
         :param output_path: The path to save the converted markdown file.
+        :param assets_dir: The directory where the assets should be saved. If None, the assets are not saved.
         """
         if not notebook_path.exists():
             raise FileNotFoundError(f"Notebook file not found: {notebook_path}")
@@ -72,6 +75,10 @@ class NotebookToHugoMarkdownConverter:
 
         # Add the frontmatter to the Markdown content
         parsed_markdown = self._add_frontmatter(notebook_path, parsed_markdown)
+
+        # Save the assets to the specified directory
+        if assets_dir is not None:
+            parsed_markdown = self._process_assets(parsed_markdown, assets_dir)
 
         # Render the finalized Markdown content to a file. The MDRenderer will take care of the formatting.
         with open(output_path, "w") as f:
@@ -171,3 +178,16 @@ class NotebookToHugoMarkdownConverter:
         current_branch = self._git_repository.current_branch_name()
         relative_path = self._git_repository.relative_path(notebook_path)
         return f"https://githubtocolab.com/{repository_name}/blob/{current_branch}/{relative_path}"
+
+    def _process_assets(
+        self, markdown: ParsedMarkdown, assets_dir: Path
+    ) -> ParsedMarkdown:
+        """
+        Iterate over all the assets in the markdown content, download them and update the paths in Markdown, so they
+        point to the downloaded files. As a side effect, the assets are downloaded to the local directory specified
+        in the configuration.
+        :param markdown: The parsed markdown content.
+        :return: The updated markdown content with the paths to the assets updated
+        """
+        # TODO: implement the method to download the assets, including both local and remote files
+        raise NotImplementedError
