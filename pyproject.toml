@@ -22,6 +22,7 @@ linkify-it-py = "^2.0.3"
 mdformat = "^0.7.19"
 mdformat-frontmatter = "^2.0.8"
 toml = "^0.10.2"
+mdformat-tables = "^1.0.0"
 
 [tool.ruff]
 lint.typing-modules = ["cibuildwheel.typing"]

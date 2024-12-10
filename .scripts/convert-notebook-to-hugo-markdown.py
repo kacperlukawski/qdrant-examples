@@ -4,6 +4,8 @@ import typer
 from helpers.markdown import NotebookToHugoMarkdownConverter
 from typing_extensions import Annotated
 
+MAIN_DIR = Path(__file__).resolve().parent.parent
+
 
 def main(
     notebook_path: Annotated[
@@ -20,7 +22,7 @@ def main(
     output_dir: Annotated[
         Path | None,
         typer.Argument(
-            exists=True,
+            exists=False,
             file_okay=False,
             dir_okay=True,
             writable=True,
@@ -34,11 +36,13 @@ def main(
     :param notebook_path: The path to the Jupyter notebook to convert.
     :param output_dir:
         The directory to save the converted markdown file. If not provided, the output will be saved
-        in the same directory as the notebook.
+        in the `.dist` directory in the main directory of the repository.
     """
     if output_dir is None:
-        output_dir = notebook_path.parent
-    output_md_file = output_dir / f"{notebook_path.stem}.md"
+        relative_notebook_dir = notebook_path.relative_to(MAIN_DIR).parent.parent
+        output_dir = MAIN_DIR / ".dist" / str(relative_notebook_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+    output_md_file = output_dir / f"{notebook_path.parent.stem}.md"
 
     converter = NotebookToHugoMarkdownConverter()
     converter.convert(notebook_path, output_md_file)
