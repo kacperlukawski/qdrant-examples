@@ -11,7 +11,7 @@ on:
 
 jobs:
   convert-notebooks:
-    name: Convert notebooks
+    name: Push notebooks to landing page
     runs-on: ubuntu-latest
 
     # This job will only run if the PR has been merged
@@ -64,3 +64,8 @@ jobs:
           git add .
           git commit -m "Add notebooks from PR #${{ github.event.pull_request.number }}\n${{ github.event.pull_request.title }}"
           git push --set-upstream origin $TARGET_BRANCH
+          gh pr create \
+            --title "Add notebooks from PR #${{ github.event.pull_request.number }}" \
+            --body "${{ github.event.pull_request.title }}" \
+            --base main
+            --head $TARGET_BRANCH
