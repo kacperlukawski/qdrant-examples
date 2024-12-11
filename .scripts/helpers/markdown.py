@@ -1,4 +1,5 @@
 import itertools
+import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -78,7 +79,9 @@ class NotebookToHugoMarkdownConverter:
 
         # Save the assets to the specified directory
         if assets_dir is not None:
-            parsed_markdown = self._process_assets(parsed_markdown, assets_dir)
+            parsed_markdown.tokens = self._process_assets(
+                parsed_markdown.tokens, notebook_path, assets_dir
+            )
 
         # Render the finalized Markdown content to a file. The MDRenderer will take care of the formatting.
         with open(output_path, "w") as f:
@@ -180,14 +183,74 @@ class NotebookToHugoMarkdownConverter:
         return f"https://githubtocolab.com/{repository_name}/blob/{current_branch}/{relative_path}"
 
     def _process_assets(
-        self, markdown: ParsedMarkdown, assets_dir: Path
-    ) -> ParsedMarkdown:
+        self,
+        tokens: list[markdown_it.token.Token] | None,
+        notebook_path: Path,
+        assets_dir: Path,
+    ) -> list[markdown_it.token.Token] | None:
         """
         Iterate over all the assets in the markdown content, download them and update the paths in Markdown, so they
         point to the downloaded files. As a side effect, the assets are downloaded to the local directory specified
         in the configuration.
-        :param markdown: The parsed markdown content.
+        :param tokens: List of tokens to parse.
+        :param notebook_path: Path to the notebook.
+        :param assets_dir: Path to store all the assets to.
         :return: The updated markdown content with the paths to the assets updated
         """
-        # TODO: implement the method to download the assets, including both local and remote files
-        raise NotImplementedError
+        if tokens is None:
+            return None
+
+        new_tokens = []
+        for token in tokens:
+            # Recursively process the children of the token
+            token.children = self._process_assets(
+                token.children, notebook_path, assets_dir
+            )
+
+            # If the token is not an image or a link, just add it to the new tokens
+            if token.type not in ("image", "link_open"):
+                new_tokens.append(token)
+                continue
+
+            # Only process local assets, as remote ones may be hosted there on purpose (like big datasets)
+            asset_link = token.attrGet("src") or token.attrGet("href")
+            asset_location = notebook_path.parent / asset_link
+
+            try:
+                is_assert_local = asset_location.is_file()
+            except OSError:
+                logger.warning("Asset might be a base64-encoded image")
+                is_assert_local = False
+
+            if not is_assert_local:
+                logger.warning(f"Asset not found in local filesystem: {asset_link}")
+                new_tokens.append(token)
+                continue
+
+            # Copy the asset and update the path in the token
+            new_asset_location = assets_dir / asset_location.name
+            shutil.copyfile(asset_location, new_asset_location)
+
+            # Create a new token with the updated path
+            new_token = markdown_it.token.Token(
+                type=token.type,
+                tag=token.tag,
+                nesting=token.nesting,
+                attrs={**token.attrs},
+                map=token.map,
+                level=token.level,
+                children=token.children,
+                content=token.content,
+            )
+
+            relative_web_url = notebook_path.stem / new_asset_location.relative_to(
+                assets_dir
+            )
+            if "src" in token.attrs:
+                new_token.attrSet("src", str(relative_web_url))
+            else:
+                new_token.attrSet("href", str(relative_web_url))
+
+            new_tokens.append(new_token)
+
+        return new_tokens
