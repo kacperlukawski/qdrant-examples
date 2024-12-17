@@ -10,6 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 jupyterlab = "^4.3.2"
+python-magic = "^0.4.27"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.10"

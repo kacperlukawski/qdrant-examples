@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import typer
-from helpers.markdown import NotebookToHugoMarkdownConverter
+from helpers.markdown import NotebookToHugoMarkdownConverter, ParsingException
 from loguru import logger
 
 MAIN_DIR = Path(__file__).resolve().parent.parent
@@ -50,7 +50,11 @@ def main(
         logger.info(
             "Converting {} to {}", notebook_path.relative_to(MAIN_DIR), output_md_file
         )
-        converter.convert(notebook_path, output_md_file, assets_dir)
+
+        try:
+            converter.convert(notebook_path, output_md_file, assets_dir)
+        except ParsingException as e:
+            logger.error("Could not convert {}: {}", notebook_path, e)
 
 
 if __name__ == "__main__":
