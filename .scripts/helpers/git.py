@@ -37,6 +37,9 @@ class GitHubRepository:
         if repo_url is None:
             raise RuntimeError("Could not find the repository URL.")
 
+        # Log the repository URL for debugging purposes
+        logger.info("Repository URL: {}", repo_url)
+
         # Parse the repo url to extract the repository name (without the .git suffix)
         if repo_url.startswith("git@"):
             repo_name = repo_url.partition(":")[2][:-4]  # remove .git suffix
