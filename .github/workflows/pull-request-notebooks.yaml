@@ -8,6 +8,7 @@ on:
 #      - master
     paths:
       - '**.ipynb'
+  workflow_dispatch: {}
 
 jobs:
   convert-notebooks:
