@@ -30,7 +30,7 @@ class GitHubRepository:
         for section_name, section in config.items():
             if not section_name.startswith("remote"):
                 continue
-            logger.info("Reading remote section: {}", section_name)
+            logger.debug("Reading remote section: {}", section_name)
             repo_url = section.get("url")
             break
 
