@@ -362,7 +362,7 @@ class NotebookToHugoMarkdownConverter:
         relative_web_url = notebook_path.stem / new_asset_location.relative_to(
             assets_dir
         )
-        new_token.attrSet("src", str(relative_web_url))
+        new_token.attrSet("src", str("documentation" / relative_web_url))
         return new_token
 
     def _guess_file_extension(self, path: Path) -> Path:
