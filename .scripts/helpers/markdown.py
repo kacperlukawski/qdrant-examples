@@ -348,9 +348,9 @@ class NotebookToHugoMarkdownConverter:
             content=token.content,
         )
 
-        relative_web_url = notebook_path.stem / new_asset_location.relative_to(
-            assets_dir
-        )
+        relative_asset_location = new_asset_location.relative_to(MAIN_DIR)
+        # Relative web url does not contain the .dist/qdrant-landing/static prefix
+        relative_web_url = Path(*relative_asset_location.parts[3:])
         new_token.attrSet("src", str("documentation" / relative_web_url))
         return new_token
 
