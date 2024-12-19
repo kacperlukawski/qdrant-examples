@@ -72,8 +72,8 @@ jobs:
           git push --set-upstream origin $TARGET_BRANCH
 
           # Check if there is an existing PR for this branch
-          PR_ID=$(gh pr list --state open --base master --head $TARGET_BRANCH --json number | jq -r '.[0].number')
-          if [ -z "$PR_ID" ]; then
+          PR_ID=$(gh pr list --repo "${{ env.TARGET_REPO }}" --state open --base master --head "${{ env.TARGET_BRANCH }}" --json number | jq -r '.[0].number')
+          if [ -n "$PR_ID" ]; then
             gh pr create \
               --title "${{ github.event.pull_request.title }}" \
               --body "Add notebooks from PR ${{ github.event.repository.name }}#${{ github.event.pull_request.number }}" \
