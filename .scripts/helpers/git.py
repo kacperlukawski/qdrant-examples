@@ -62,6 +62,9 @@ class GitHubRepository:
         with head_file.open("r") as f:
             content = f.read().splitlines()
 
+        # Log the content of the HEAD file for debugging purposes
+        logger.debug("HEAD file content: {}", content)
+
         for line in content:
             if line[0:4] == "ref:":
                 return line.partition("refs/heads/")[2]
